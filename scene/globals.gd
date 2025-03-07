@@ -1,0 +1,8 @@
+# Global Autoloaded Script.
+# Use this to store node references and such.
+# Class name: Globals
+# 
+# To use:
+# 
+# Globals.special_node = self in _ready()
+extends Node

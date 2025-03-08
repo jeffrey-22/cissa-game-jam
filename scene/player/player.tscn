@@ -7,5 +7,21 @@
 script = ExtResource("1_pna28")
 
 [node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(227, 120)
+
+[node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(259, 120)
 
 [node name="Joints" type="Node2D" parent="."]
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Joints"]
+position = Vector2(243, 104)
+node_a = NodePath("../../PlayerTile")
+node_b = NodePath("../../PlayerTile2")
+disable_collision = false
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="Joints"]
+position = Vector2(243, 136)
+node_a = NodePath("../../PlayerTile")
+node_b = NodePath("../../PlayerTile2")
+disable_collision = false

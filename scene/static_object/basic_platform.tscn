@@ -1,7 +1,16 @@
-[gd_scene format=3 uid="uid://b621oybhp1vaj"]
+[gd_scene load_steps=3 format=3 uid="uid://b621oybhp1vaj"]
+
+[ext_resource type="Texture2D" uid="uid://6t044hqid5mg" path="res://asset/self_made/graphic/object/black_square.png" id="1_1axvk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d3f2l"]
+size = Vector2(32, 32)
 
 [node name="BasicPlatform" type="StaticBody2D"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+collision_layer = 2
+collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_1axvk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_d3f2l")

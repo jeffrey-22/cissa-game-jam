@@ -102,17 +102,80 @@ func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_directio
 		var all_children_node = get_children(false)
 		for child_node in all_children_node:
 			if child_node is PlayerTile:
-				child_node.local_body_position += local_body_position_difference
+				if child_node.is_physics_active():
+					child_node.local_body_position += local_body_position_difference
 		central_player_tile_node = new_central_player_tile_node
 
 # On child entering, connect the central tile signal if it is a PlayerTile
 func _on_child_entered_tree(node: Node) -> void:
 	if node is PlayerTile:
 		node.promote_central_request.connect(_on_promote_central_request)
+		node.current_player_tile_detached.connect(_on_current_player_tile_detached)
 
 # A PlayerTile receives a right click to request to become central
 func _on_promote_central_request(requester_player_tile_node: PlayerTile) -> void:
 	central_player_tile_node = requester_player_tile_node
+
+# Return the average position of all child PlayerTiles
+func get_average_position() -> Vector2:
+	var position_sum = Vector2.ZERO
+	var child_count = 0
+	var all_children_node = get_children(false)
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				position_sum += child_node.position
+				child_count += 1
+	return position_sum / child_count
+
+# Detect a node detached, detach others as a chain effect
+func _on_current_player_tile_detached(_detached_node: PlayerTile) -> void:
+	var all_children_node = get_children(false)
+	var is_node_staying = {}
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				is_node_staying[child_node] = false
+	is_node_staying = dfs_label_as_staying(central_player_tile_node, is_node_staying)
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				if not(is_node_staying[child_node]):
+					child_node.detach_by_chain_effect()
+	var deleting_tile_connections = tile_connections.filter(
+		func(connection):
+			# is connection worth deleting
+			var node_a = connection[0]
+			var node_b = connection[1]
+			if not(is_node_staying.get(node_a, false)) or not(is_node_staying.get(node_b, false)):
+				return true
+			return false
+	)
+	for connection in deleting_tile_connections:
+		var pin_joint_c = connection[2]
+		var pin_joint_d = connection[3]
+		pin_joint_c.queue_free()
+		pin_joint_d.queue_free()
+	tile_connections = tile_connections.filter(
+		func(connection):
+			# is connection worth staying
+			var node_a = connection[0]
+			var node_b = connection[1]
+			if not(is_node_staying.get(node_a, false)) or not(is_node_staying.get(node_b, false)):
+				return false
+			return true
+	)
+	
+func dfs_label_as_staying(current_node: PlayerTile, is_node_staying: Dictionary) -> Dictionary:
+	is_node_staying[current_node] = true
+	for connection in tile_connections:
+		var node_a = connection[0]
+		var node_b = connection[1]
+		if node_a == current_node and not(is_node_staying.get(node_b, true)):
+			is_node_staying = dfs_label_as_staying(node_b, is_node_staying)
+		if node_b == current_node and not(is_node_staying.get(node_a, true)):
+			is_node_staying = dfs_label_as_staying(node_a, is_node_staying)
+	return is_node_staying
 
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_1"):

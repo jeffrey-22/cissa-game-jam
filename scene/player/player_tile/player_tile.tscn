@@ -1,9 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpxhsojhdtkyx"]
+[gd_scene load_steps=7 format=3 uid="uid://cpxhsojhdtkyx"]
 
 [ext_resource type="Script" path="res://scene/player/player_tile/player_tile.gd" id="1_i42h4"]
+[ext_resource type="Texture2D" uid="uid://wlicu61qw1lg" path="res://asset/self_made/graphic/player_tile/basic_blue_tile.png" id="2_ocq27"]
 [ext_resource type="Texture2D" uid="uid://de664c0m3553r" path="res://asset/self_made/graphic/player_tile/basic_orange_tile.png" id="2_sulo8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1vyo1"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_igqnm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ocq27")
+}],
+"loop": true,
+"name": &"central_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_sulo8")
+}],
+"loop": true,
+"name": &"default_idle",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpxrs"]
 size = Vector2(32, 32)
@@ -11,12 +31,15 @@ size = Vector2(32, 32)
 [node name="PlayerTile" type="RigidBody2D"]
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_1vyo1")
+freeze = true
 script = ExtResource("1_i42h4")
 half_side_length = null
+is_starting_tile = null
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 10
-texture = ExtResource("2_sulo8")
+sprite_frames = SubResource("SpriteFrames_igqnm")
+animation = &"default_idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dpxrs")
@@ -27,3 +50,5 @@ shape = SubResource("RectangleShape2D_dpxrs")
 shape = SubResource("RectangleShape2D_dpxrs")
 
 [connection signal="input_event" from="MouseDetectArea2D" to="." method="_on_mouse_detect_area_2d_input_event"]
+[connection signal="mouse_entered" from="MouseDetectArea2D" to="." method="_on_mouse_detect_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="MouseDetectArea2D" to="." method="_on_mouse_detect_area_2d_mouse_exited"]

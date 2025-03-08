@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6kwfn4yc6wqt"]
+[gd_scene load_steps=2 format=3 uid="uid://c7i4vbnife26k"]
 
-[ext_resource type="Script" path="res://scene/player/player_tile/basic_player_tile.gd" id="1_t6lfy"]
+[sub_resource type="GDScript" id="GDScript_e8txu"]
+script/source = "# Basic PlayerTile
+# With average physics properties
+extends PlayerTile
+"
 
 [node name="BasicPlayerTile" type="Node2D"]
-script = ExtResource("1_t6lfy")
+script = SubResource("GDScript_e8txu")

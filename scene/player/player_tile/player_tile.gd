@@ -7,6 +7,7 @@ extends RigidBody2D
 class_name PlayerTile
 
 @onready var sprite_node = $Sprite2D
+@onready var collision_shape_node = $CollisionShape2D
 
 # Local position in the main body space.
 # Central node has (0, 0)
@@ -38,4 +39,11 @@ func cancel_central() -> void:
 func promote_central() -> void:
 	pass
 
-# Detect if right clicked, then ask to be promoted to central
+signal promote_central_request(central_node: PlayerTile)
+
+# Connected to MouseDetectArea2D
+# Invoked when mouse input event occurs within the current shape
+func _on_mouse_detect_area_2d_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		promote_central_request.emit(self)
+		get_viewport().set_input_as_handled()

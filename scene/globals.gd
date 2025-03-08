@@ -6,3 +6,5 @@
 # 
 # Globals.special_node = self in _ready()
 extends Node
+
+var player_node: Player

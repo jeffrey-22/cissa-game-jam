@@ -8,6 +8,10 @@ script = ExtResource("1_pna28")
 
 [node name="StartingPlayerTile" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(227, 120)
+half_side_length = null
 
 [node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(259, 120)
+half_side_length = null
+
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]

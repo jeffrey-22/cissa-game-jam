@@ -46,6 +46,13 @@ debug_5={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="PlayerTile in placed state"
+2d_physics/layer_2="Static ground object like platforms"
+2d_physics/layer_3="PlayerTile in floating/dragging state"
+2d_physics/layer_4="Hint square"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

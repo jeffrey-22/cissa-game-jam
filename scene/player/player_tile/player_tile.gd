@@ -50,13 +50,18 @@ var current_drag_state = DragState.UNCOLLECTED
 func is_physics_active() -> bool:
 	return current_drag_state == DragState.NORMAL or current_drag_state == DragState.NORMAL_HOVER
 
+# To fix the joints still working when physics are disabled
+signal flush_connections(changed_player_tile_node: PlayerTile)
+
 func disable_physics() -> void:
 	freeze = true
 	collision_shape_node.disabled = true
+	flush_connections.emit(self)
 	
 func enable_physics() -> void:
 	freeze = false
 	collision_shape_node.disabled = false
+	flush_connections.emit(self)
 
 func enter_new_drag_state(state: DragState) -> void:
 	match state:
@@ -86,6 +91,7 @@ func exit_old_drag_state(state: DragState) -> void:
 			animated_sprite_node.scale /= 1.1
 		DragState.DRAGGING:
 			enable_physics()
+			Globals.is_mouse_dragging = false
 		DragState.AFLOAT:
 			enable_physics()
 		DragState.AFLOAT_HOVER:
@@ -166,9 +172,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and not(event.pressed):
 			match current_drag_state:
 				DragState.DRAGGING:
-					print("Drag cancel!")
-					# TODO: Handle here, to put state into normal or afloat
-					change_drag_state(DragState.NORMAL)
+					var player_node = Globals.player_node
+					var target_hint_square = player_node.find_nearest_hint_square(global_position)
+					# Failed to lock onto a square
+					if target_hint_square == null:
+						change_drag_state(DragState.AFLOAT)
+					else:
+						player_node.attach_new_node_by_local_position(self, target_hint_square.local_body_position)
+						change_drag_state(DragState.NORMAL)
 	if event is InputEventMouseMotion and current_drag_state == DragState.DRAGGING:
 		global_position = get_global_mouse_position() + drag_offset
 
@@ -203,3 +214,7 @@ func _on_mouse_detect_area_2d_mouse_entered() -> void:
 # Connected to MouseDetectArea2D
 func _on_mouse_detect_area_2d_mouse_exited() -> void:
 	is_mouse_hovering = false
+
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("debug_2"):
+		print(str(self) + " @ local " + str(local_body_position) + " @ state " + str(current_drag_state))

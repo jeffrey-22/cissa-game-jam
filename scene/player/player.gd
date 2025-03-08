@@ -6,6 +6,13 @@ class_name Player
 # Some suitable amount of (half) distance between the two joints
 const JOINT_DISPARITY = 15
 
+# 1 space in local body position is equal to 32 px of real scale
+const LOCAL_COORDINATE_SCALE = 32
+
+# In pixels, the minimum distance from a hinting position to the actual position
+# for it to be considered "locked in"
+const MINIMUM_AUTOLOCK_DISTANCE = 30
+
 # Attach directions, to make it convenient for square tiles
 enum AttachDirection { UP, DOWN, LEFT, RIGHT }
 
@@ -103,7 +110,7 @@ func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_directio
 		for child_node in all_children_node:
 			if child_node is PlayerTile:
 				if child_node.is_physics_active():
-					child_node.local_body_position += local_body_position_difference
+					child_node.local_body_position -= local_body_position_difference
 		central_player_tile_node = new_central_player_tile_node
 
 # On child entering, connect the central tile signal if it is a PlayerTile
@@ -111,25 +118,13 @@ func _on_child_entered_tree(node: Node) -> void:
 	if node is PlayerTile:
 		node.promote_central_request.connect(_on_promote_central_request)
 		node.current_player_tile_detached.connect(_on_current_player_tile_detached)
+		node.flush_connections.connect(_on_flush_connections)
 
 # A PlayerTile receives a right click to request to become central
 func _on_promote_central_request(requester_player_tile_node: PlayerTile) -> void:
 	central_player_tile_node = requester_player_tile_node
-
-# Return the average position of all child PlayerTiles
-func get_average_position() -> Vector2:
-	var position_sum = Vector2.ZERO
-	var child_count = 0
-	var all_children_node = get_children(false)
-	for child_node in all_children_node:
-		if child_node is PlayerTile:
-			if child_node.is_physics_active():
-				position_sum += child_node.position
-				child_count += 1
-	return position_sum / child_count
-
-# Detect a node detached, detach others as a chain effect
-func _on_current_player_tile_detached(_detached_node: PlayerTile) -> void:
+	
+func flush_all_connections_and_node_activities(exclude_staying_node: PlayerTile = null) -> void:
 	var all_children_node = get_children(false)
 	var is_node_staying = {}
 	for child_node in all_children_node:
@@ -140,7 +135,7 @@ func _on_current_player_tile_detached(_detached_node: PlayerTile) -> void:
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
 			if child_node.is_physics_active():
-				if not(is_node_staying[child_node]):
+				if not(is_node_staying[child_node]) and child_node != exclude_staying_node:
 					child_node.detach_by_chain_effect()
 	var deleting_tile_connections = tile_connections.filter(
 		func(connection):
@@ -166,6 +161,26 @@ func _on_current_player_tile_detached(_detached_node: PlayerTile) -> void:
 			return true
 	)
 	
+# A PlayerTile changes its physics and requests connections to be updated
+func _on_flush_connections(changed_player_tile_node: PlayerTile) -> void:
+	flush_all_connections_and_node_activities(changed_player_tile_node)
+
+# Return the average position of all child PlayerTiles
+func get_average_position() -> Vector2:
+	var position_sum = Vector2.ZERO
+	var child_count = 0
+	var all_children_node = get_children(false)
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				position_sum += child_node.position
+				child_count += 1
+	return position_sum / child_count
+
+# Detect a node detached, detach others as a chain effect
+func _on_current_player_tile_detached(detached_node: PlayerTile) -> void:
+	flush_all_connections_and_node_activities(detached_node)
+	
 func dfs_label_as_staying(current_node: PlayerTile, is_node_staying: Dictionary) -> Dictionary:
 	is_node_staying[current_node] = true
 	for connection in tile_connections:
@@ -180,3 +195,94 @@ func dfs_label_as_staying(current_node: PlayerTile, is_node_staying: Dictionary)
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_1"):
 		add_tile_connection($StartingPlayerTile, $PlayerTile2, AttachDirection.UP)
+	if Globals.is_mouse_dragging:
+		create_hint_squares()
+	else:
+		clear_hint_squares()
+
+@onready var hint_squares = $HintSquares
+
+# Have hint squares copy central position always
+func _process(_delta: float) -> void:
+	hint_squares.position = central_player_tile_node.position
+	hint_squares.rotation = central_player_tile_node.rotation
+
+# Clear dated hint squares
+func clear_hint_squares() -> void:
+	var dated_hint_sqaures = hint_squares.get_children(false)
+	for dated_hint_square in dated_hint_sqaures:
+		dated_hint_square.queue_free()
+	
+# Create hint squares
+func create_hint_squares() -> void:
+	var occupied_coordinates = {}
+	var all_children_node = get_children(false)
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				occupied_coordinates[child_node.local_body_position] = true
+	# clear dated ones
+	clear_hint_squares()
+	# populate with new ones
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				for expand_direction in AttachDirection.values():
+					var new_local_body_position = child_node.local_body_position +\
+						get_corresponding_direction_vector(expand_direction)
+					if occupied_coordinates.get(new_local_body_position, false):
+						continue
+					occupied_coordinates[new_local_body_position] = true
+					attempt_to_create_hint_square_at(
+						new_local_body_position * LOCAL_COORDINATE_SCALE,
+						child_node.rotation,
+						new_local_body_position
+					)
+
+var hint_square_scene = preload("res://scene/player/hint_square.tscn")
+
+# Create a single hint square at position
+func attempt_to_create_hint_square_at(created_position, copy_rotation, copy_local_position):
+	var hint_square_instance: Node2D = hint_square_scene.instantiate()
+	hint_squares.add_child(hint_square_instance)
+	hint_square_instance.local_body_position = copy_local_position
+	hint_square_instance.position = created_position
+	hint_square_instance.rotate(copy_rotation)
+
+# Find nearest hint square. If no hint squares are available return null
+func find_nearest_hint_square(global_search_position) -> HintSquare:
+	create_hint_squares()
+	var all_hint_square = hint_squares.get_children()
+	var return_value = null
+	var closest_distance = 0
+	for hint_square in all_hint_square:
+		var distance_to_search_position = hint_square.global_position.distance_to(global_search_position)
+		if return_value == null:
+			closest_distance = distance_to_search_position
+			return_value = hint_square
+		elif distance_to_search_position < closest_distance:
+			closest_distance = distance_to_search_position
+			return_value = hint_square
+	# if found hint square is too far, discard it
+	if closest_distance > MINIMUM_AUTOLOCK_DISTANCE:
+		return_value = null
+	return return_value
+
+# Attach a new node
+func attach_new_node_by_local_position(new_player_tile_node, local_body_position) -> void:
+	new_player_tile_node.local_body_position = local_body_position
+	# find all main body children nodes that share an edge with this new tile
+	var all_children_node = get_children(false)
+	var local_body_position_to_player_tile_lookup = {}
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active():
+				local_body_position_to_player_tile_lookup[child_node.local_body_position] = child_node
+	for attaching_direction in AttachDirection.values():
+		var sourcing_direction = get_opposite_attach_direction(attaching_direction)
+		var sourcing_local_body_position = get_corresponding_direction_vector(sourcing_direction)
+		sourcing_local_body_position += local_body_position
+		var sourcing_player_tile_node = local_body_position_to_player_tile_lookup.get(sourcing_local_body_position, null)
+		if sourcing_player_tile_node != null:
+			add_tile_connection(sourcing_player_tile_node, new_player_tile_node, attaching_direction)
+		

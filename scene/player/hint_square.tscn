@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bp2qh4wwn5hdv"]
+
+[ext_resource type="Texture2D" uid="uid://0621gvds6cji" path="res://asset/self_made/user_interface/light_blue_hint_square.png" id="1_41e67"]
+[ext_resource type="Script" path="res://scene/player/hint_square.gd" id="1_orbyw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w7uwg"]
+size = Vector2(30, 30)
+
+[node name="HintSquare" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_orbyw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_41e67")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_w7uwg")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

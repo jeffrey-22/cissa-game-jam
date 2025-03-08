@@ -14,7 +14,11 @@ physics_material_override = SubResource("PhysicsMaterial_1vyo1")
 script = ExtResource("1_i42h4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 10
 texture = ExtResource("2_sulo8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dpxrs")
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(16, 0)

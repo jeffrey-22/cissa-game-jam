@@ -11,3 +11,10 @@
 
 [node name="BasicPlatform" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
 position = Vector2(277, 199)
+
+[node name="BasicPlatform" parent="StaticObjects/BasicPlatform" instance=ExtResource("2_dn2bf")]
+position = Vector2(-79, 160)
+
+[node name="BasicPlatform" parent="StaticObjects/BasicPlatform/BasicPlatform" instance=ExtResource("2_dn2bf")]
+position = Vector2(305, 178)
+scale = Vector2(30, 1.175)

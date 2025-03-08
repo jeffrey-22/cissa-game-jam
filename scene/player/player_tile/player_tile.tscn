@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpxhsojhdtkyx"]
+
+[ext_resource type="Script" path="res://scene/player/player_tile/player_tile.gd" id="1_i42h4"]
+[ext_resource type="Texture2D" uid="uid://de664c0m3553r" path="res://asset/self_made/graphic/player_tile/basic_orange_tile.png" id="2_sulo8"]
+
+[node name="PlayerTile" type="RigidBody2D"]
+script = ExtResource("1_i42h4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_sulo8")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+build_mode = 1
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)

@@ -256,9 +256,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 @onready var afloat_indication_line = $MagneticIndicationLine2D
 
-# threshold for when reached, detach the current tile
-@export var linear_momentum_detach_threshold = 1500.0
-@export var angular_momentum_detach_threshold = 800.0
+# Threshold for when reached, detach the current tile
+# A hacky solution to prevent some sort of perpetual motion generator
+@export var linear_momentum_detach_threshold = 900.0
+@export var angular_momentum_detach_threshold = 6.5
 
 # Decide if there are needs for state updates
 func _physics_process(delta: float) -> void:
@@ -272,8 +273,8 @@ func _physics_process(delta: float) -> void:
 				var linear_momentum = mass * linear_velocity.length()
 				var angular_momentum = mass * angular_velocity
 				var is_momentum_too_large: bool = false
-				if linear_momentum > linear_momentum_detach_threshold or\
-					angular_momentum > angular_momentum_detach_threshold:
+				if abs(linear_momentum) > linear_momentum_detach_threshold or\
+					abs(angular_momentum) > angular_momentum_detach_threshold:
 						is_momentum_too_large = true
 				if is_momentum_too_large and not(is_central_tile):
 					change_drag_state(DragState.AFLOAT)

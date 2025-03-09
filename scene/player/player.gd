@@ -372,12 +372,18 @@ func get_highest_connected_player_tile() -> PlayerTile:
 					return_value = child_node
 	return return_value
 	
-func get_connected_player_tile_count() -> int:
+func get_usable_player_tile_count() -> int:
 	var all_children_node = get_children(false)
 	var count = 0
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active:
+			if child_node.current_drag_state in [
+				PlayerTile.DragState.NORMAL,
+				PlayerTile.DragState.NORMAL_HOVER,
+				PlayerTile.DragState.AFLOAT,
+				PlayerTile.DragState.AFLOAT_HOVER,
+				PlayerTile.DragState.DRAGGING,
+			]:
 				count += 1
 	return count
 	

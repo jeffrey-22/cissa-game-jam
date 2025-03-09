@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://b713cpfx2oqhk"]
+
+[ext_resource type="PackedScene" uid="uid://d3x1ygk5eo61e" path="res://scene/camera/camera.tscn" id="1_234gi"]
+[ext_resource type="PackedScene" uid="uid://bpc7e4rar1o0k" path="res://scene/player/player.tscn" id="2_r3wmh"]
+[ext_resource type="PackedScene" uid="uid://bcjbvhavit4n4" path="res://scene/user_interface/user_interface.tscn" id="3_3tk3r"]
+[ext_resource type="PackedScene" uid="uid://cy2ob2r4teaot" path="res://scene/static_object/long_ground_platform.tscn" id="3_vyipp"]
+
+[node name="MainLevel" type="Node"]
+
+[node name="Camera" parent="." instance=ExtResource("1_234gi")]
+limit_right = 1280
+
+[node name="Player" parent="." instance=ExtResource("2_r3wmh")]
+
+[node name="StaticObjects" type="Node2D" parent="."]
+
+[node name="Boundary" type="Node2D" parent="StaticObjects"]
+
+[node name="LongGroundPlatform" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(640, -24)
+
+[node name="LongGroundPlatform2" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(24, -16000)
+rotation = 1.5708
+scale = Vector2(10, 1)
+
+[node name="LongGroundPlatform3" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(1264, -16000)
+rotation = 1.5708
+scale = Vector2(10, 1)
+
+[node name="BackgroundObjects" type="Node2D" parent="."]
+
+[node name="UserInterface" parent="." instance=ExtResource("3_3tk3r")]

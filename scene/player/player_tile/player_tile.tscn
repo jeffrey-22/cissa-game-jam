@@ -43,7 +43,7 @@ script = ExtResource("1_i42h4")
 
 [node name="MagneticIndicationLine2D" type="Line2D" parent="."]
 visible = false
-z_index = 2
+z_index = 7
 y_sort_enabled = true
 points = PackedVector2Array(147, 53, 26, 55)
 width_curve = SubResource("Curve_bh3bn")

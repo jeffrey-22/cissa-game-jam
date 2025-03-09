@@ -8,7 +8,7 @@ class_name Camera
 # Might want to speed up if the body grows larger
 # As well as zoom out
 @export var smoothing_speed = 5.0
-@export var zoom_scale_reference = 12.0
+@export var zoom_scale_reference = 8.0
 
 # For now use the average position of all player tiles
 func get_main_player_body_target_position() -> Vector2:
@@ -18,11 +18,11 @@ func get_main_player_body_target_position() -> Vector2:
 func _ready() -> void:
 	zoom = Vector2.ONE * 2.0
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	position_smoothing_speed = smoothing_speed
-	var player_node = Globals.player_node
-	var tile_count = player_node.get_connected_player_tile_count()
-	tile_count = max(tile_count, 6)
-	var zoom_scalar = zoom_scale_reference / (1.0 * tile_count)
-	zoom = zoom.lerp(Vector2.ONE * zoom_scalar, 2.0 * delta)
+	#var player_node = Globals.player_node
+	#var tile_count = player_node.get_usable_player_tile_count()
+	#tile_count = max(tile_count, 4)
+	#var zoom_scalar = zoom_scale_reference / (1.0 * tile_count)
+	#zoom = zoom.lerp(Vector2.ONE * zoom_scalar, 2.0 * delta)
 	position = get_main_player_body_target_position()

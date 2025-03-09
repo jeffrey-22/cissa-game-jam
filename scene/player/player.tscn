@@ -7,34 +7,23 @@
 script = ExtResource("1_pna28")
 
 [node name="StartingPlayerTile" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(64, 144)
-half_side_length = 16
+position = Vector2(73, -64)
 is_starting_tile = true
 
 [node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(138, 397)
-half_side_length = 16
-is_starting_tile = false
+position = Vector2(122, -119)
 
 [node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(248, 410)
-half_side_length = 16
-is_starting_tile = false
+position = Vector2(329, -96)
 
 [node name="PlayerTile4" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(300, 442)
-half_side_length = 16
-is_starting_tile = false
+position = Vector2(544, -74)
 
 [node name="PlayerTile3" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(207, 437)
-half_side_length = 16
-is_starting_tile = false
+position = Vector2(268, -98)
 
 [node name="PlayerTile5" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(313, 394)
-half_side_length = 16
-is_starting_tile = false
+position = Vector2(426, -77)
 
 [node name="HintSquares" type="Node2D" parent="."]
 

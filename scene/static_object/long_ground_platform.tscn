@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://cy2ob2r4teaot"]
+
+[ext_resource type="PackedScene" uid="uid://b621oybhp1vaj" path="res://scene/static_object/basic_platform.tscn" id="1_e1v4r"]
+[ext_resource type="Texture2D" uid="uid://nj38x1n2ucjs" path="res://asset/self_made/graphic/object/long_violet_ground_platform.png" id="1_gk2j8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mu6bq"]
+size = Vector2(3200, 48)
+
+[node name="LongGroundPlatform" instance=ExtResource("1_e1v4r")]
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("1_gk2j8")
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_mu6bq")

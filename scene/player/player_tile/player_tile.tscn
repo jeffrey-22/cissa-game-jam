@@ -29,7 +29,7 @@ animations = [{
 size = Vector2(32, 32)
 
 [node name="PlayerTile" type="RigidBody2D"]
-collision_mask = 3
+collision_mask = 2
 physics_material_override = SubResource("PhysicsMaterial_1vyo1")
 freeze = true
 script = ExtResource("1_i42h4")

@@ -13,6 +13,53 @@ class_name PlayerTile
 # Central node has (0, 0)
 var local_body_position: Vector2i = Vector2i.ZERO
 
+# Distance between floating center and highest tile, in pixels
+@export var afloat_comfort_y_distance = randf_range(80, 100)
+
+# Floating center's x offset with the average x value (x += offset)
+@export var afloat_comfort_x_offset = randf_range(-60, 60)
+
+# Floating moving speed (move_speed * delta)
+@export var afloat_move_speed = randf_range(1, 1.5)
+@export var afloat_rotate_speed = randf_range(5.0, 10.0)
+
+# Floating range = center +/- X/Y Deviation
+@export var afloat_x_deviation = 15
+@export var afloat_y_deviation = 5
+
+# Set on entering state, changed once reached
+var afloat_target_global_position: Vector2
+
+# Distance on which the floating block will be pulled towards a new target
+@export var afloat_pullback_breakpoint_distance = randf_range(20, 25)
+
+func get_afloat_target_center_breakpoint_distance() -> float:
+	var center_floating_position = get_afloat_target_center_position()
+	return center_floating_position.distance_to(afloat_target_global_position)
+	
+func get_afloat_target_center_position() -> Vector2:
+	var player_node = Globals.player_node
+	var highest_player_tile = player_node.get_highest_connected_player_tile()
+	var average_position = player_node.get_average_position()
+	var highest_y_coordinate_value = highest_player_tile.position.y
+	var center_floating_position = Vector2(\
+		average_position.x + afloat_comfort_x_offset, 
+		highest_y_coordinate_value - afloat_comfort_y_distance
+	)
+	return center_floating_position
+
+func get_new_afloat_target_position() -> Vector2:
+	var center_floating_position = get_afloat_target_center_position()
+	var target_x = randf_range(\
+		center_floating_position.x - afloat_x_deviation,
+		center_floating_position.x + afloat_x_deviation
+	)
+	var target_y = randf_range(\
+		center_floating_position.y - afloat_y_deviation,
+		center_floating_position.y + afloat_y_deviation
+	)
+	return Vector2(target_x, target_y)
+
 # 32 x 32px sprite, so half_side_length is 16
 @export var half_side_length = 16 
 var distance_from_sprite_center_to_left_edge = half_side_length
@@ -85,7 +132,9 @@ func enter_new_drag_state(state: DragState, should_flush: bool = true) -> void:
 			disable_physics(should_flush)
 		DragState.AFLOAT:
 			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
+			# first disable physics then decide new position
 			disable_physics(should_flush)
+			afloat_target_global_position = get_new_afloat_target_position()
 		DragState.AFLOAT_HOVER:
 			disable_physics(should_flush)
 			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
@@ -206,7 +255,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		global_position = get_global_mouse_position() + drag_offset
 
 # Decide if there are needs for state updates
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	match current_drag_state:
 		DragState.NORMAL:
 			if is_mouse_hovering and not(is_central_tile):
@@ -217,6 +266,25 @@ func _physics_process(_delta: float) -> void:
 		DragState.DRAGGING:
 			pass
 		DragState.AFLOAT:
+			# TODO
+			if global_position.distance_to(afloat_target_global_position) <= 1.0 or\
+				get_afloat_target_center_breakpoint_distance() > afloat_pullback_breakpoint_distance:
+				afloat_target_global_position = get_new_afloat_target_position()
+			# var direction = (afloat_target_global_position - global_position).normalized()
+			# global_position += direction * afloat_move_speed * delta  # Move at constant speed
+			global_position = global_position.lerp(\
+				afloat_target_global_position, 
+				afloat_move_speed * delta
+			)
+			# find closest multiple of 2pi (TAU), then lerp towards it
+			var target_rotation
+			var lower = floor(rotation / TAU) * TAU
+			var upper = ceil(rotation / TAU) * TAU
+			if abs(lower - rotation) < abs(upper - rotation):
+				target_rotation = lower
+			else:
+				target_rotation = upper
+			rotation = lerp(rotation, target_rotation, afloat_rotate_speed * delta)
 			if is_mouse_hovering:
 				change_drag_state(DragState.AFLOAT_HOVER)
 		DragState.AFLOAT_HOVER:

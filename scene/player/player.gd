@@ -372,3 +372,12 @@ func get_highest_connected_player_tile() -> PlayerTile:
 					return_value = child_node
 	return return_value
 	
+func get_connected_player_tile_count() -> int:
+	var all_children_node = get_children(false)
+	var count = 0
+	for child_node in all_children_node:
+		if child_node is PlayerTile:
+			if child_node.is_physics_active:
+				count += 1
+	return count
+	

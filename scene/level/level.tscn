@@ -10,19 +10,14 @@
 
 [node name="Player" parent="." instance=ExtResource("1_ffht5")]
 
-[node name="StartingPlayerTile" parent="Player" index="0"]
-position = Vector2(89, 217)
-
 [node name="StaticObjects" type="Node2D" parent="."]
 
 [node name="BasicPlatform2" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
-position = Vector2(381, 446)
+position = Vector2(392, 436)
 
 [node name="BasicPlatform" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
-position = Vector2(451, 371)
+position = Vector2(507, 397)
 
 [node name="BasicPlatform3" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
-position = Vector2(467, 533)
+position = Vector2(503, 537)
 scale = Vector2(30, 1.175)
-
-[editable path="Player"]

@@ -256,6 +256,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 @onready var afloat_indication_line = $MagneticIndicationLine2D
 
+# threshold for when reached, detach the current tile
+@export var linear_momentum_detach_threshold = 1500.0
+@export var angular_momentum_detach_threshold = 800.0
+
 # Decide if there are needs for state updates
 func _physics_process(delta: float) -> void:
 	if current_drag_state != DragState.AFLOAT:
@@ -264,6 +268,15 @@ func _physics_process(delta: float) -> void:
 		DragState.NORMAL:
 			if is_mouse_hovering and not(is_central_tile):
 				change_drag_state(DragState.NORMAL_HOVER)
+			else:
+				var linear_momentum = mass * linear_velocity.length()
+				var angular_momentum = mass * angular_velocity
+				var is_momentum_too_large: bool = false
+				if linear_momentum > linear_momentum_detach_threshold or\
+					angular_momentum > angular_momentum_detach_threshold:
+						is_momentum_too_large = true
+				if is_momentum_too_large and not(is_central_tile):
+					change_drag_state(DragState.AFLOAT)
 		DragState.NORMAL_HOVER:
 			if not(is_mouse_hovering) or is_central_tile:
 				change_drag_state(DragState.NORMAL)
@@ -296,6 +309,9 @@ func _physics_process(delta: float) -> void:
 			else:
 				target_rotation = upper
 			rotation = lerp(rotation, target_rotation, afloat_rotate_speed * delta)
+			
+			afloat_indication_line.rotation = target_rotation - rotation
+			
 			if is_mouse_hovering:
 				change_drag_state(DragState.AFLOAT_HOVER)
 		DragState.AFLOAT_HOVER:

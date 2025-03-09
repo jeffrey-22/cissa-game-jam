@@ -17,7 +17,7 @@ var local_body_position: Vector2i = Vector2i.ZERO
 @export var afloat_comfort_y_distance = randf_range(80, 100)
 
 # Floating center's x offset with the average x value (x += offset)
-@export var afloat_comfort_x_offset = randf_range(-60, 60)
+@export var afloat_comfort_x_offset = randf_range(-90, 90)
 
 # Floating moving speed (move_speed * delta)
 @export var afloat_move_speed = randf_range(1, 1.5)
@@ -131,13 +131,13 @@ func enter_new_drag_state(state: DragState, should_flush: bool = true) -> void:
 			Globals.is_mouse_dragging = true
 			disable_physics(should_flush)
 		DragState.AFLOAT:
-			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
+			animated_sprite_node.modulate = Color(0.7, 0.8, 0.6, 1)
 			# first disable physics then decide new position
 			disable_physics(should_flush)
 			afloat_target_global_position = get_new_afloat_target_position()
 		DragState.AFLOAT_HOVER:
 			disable_physics(should_flush)
-			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
+			animated_sprite_node.modulate = Color(0.7, 0.8, 0.6, 1)
 			animated_sprite_node.scale *= 1.1
 		DragState.UNCOLLECTED:
 			disable_physics(should_flush)
@@ -254,8 +254,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and current_drag_state == DragState.DRAGGING:
 		global_position = get_global_mouse_position() + drag_offset
 
+@onready var afloat_indication_line = $MagneticIndicationLine2D
+
 # Decide if there are needs for state updates
 func _physics_process(delta: float) -> void:
+	if current_drag_state != DragState.AFLOAT:
+		afloat_indication_line.visible = false
 	match current_drag_state:
 		DragState.NORMAL:
 			if is_mouse_hovering and not(is_central_tile):
@@ -266,7 +270,14 @@ func _physics_process(delta: float) -> void:
 		DragState.DRAGGING:
 			pass
 		DragState.AFLOAT:
-			# TODO
+			afloat_indication_line.visible = true
+			afloat_indication_line.set_point_position(0, Vector2.ZERO)
+			var player_node = Globals.player_node
+			var target_indication_position = player_node.central_player_tile_node.position
+			target_indication_position -= position
+			
+			afloat_indication_line.set_point_position(1, target_indication_position)
+			
 			if global_position.distance_to(afloat_target_global_position) <= 1.0 or\
 				get_afloat_target_center_breakpoint_distance() > afloat_pullback_breakpoint_distance:
 				afloat_target_global_position = get_new_afloat_target_position()

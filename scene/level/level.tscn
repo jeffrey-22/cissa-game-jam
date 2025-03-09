@@ -10,6 +10,9 @@
 
 [node name="Player" parent="." instance=ExtResource("1_ffht5")]
 
+[node name="StartingPlayerTile" parent="Player" index="0"]
+position = Vector2(89, 217)
+
 [node name="StaticObjects" type="Node2D" parent="."]
 
 [node name="BasicPlatform2" parent="StaticObjects" instance=ExtResource("2_dn2bf")]

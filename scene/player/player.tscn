@@ -13,6 +13,18 @@ is_starting_tile = true
 [node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(138, 397)
 
+[node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(248, 410)
+
+[node name="PlayerTile4" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(300, 442)
+
+[node name="PlayerTile3" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(207, 437)
+
+[node name="PlayerTile5" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(313, 394)
+
 [node name="HintSquares" type="Node2D" parent="."]
 
 [connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]

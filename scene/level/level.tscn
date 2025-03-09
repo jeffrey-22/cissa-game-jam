@@ -12,12 +12,14 @@
 
 [node name="StaticObjects" type="Node2D" parent="."]
 
+[node name="BasicPlatform2" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
+position = Vector2(381, 446)
+
 [node name="BasicPlatform" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
-position = Vector2(277, 199)
+position = Vector2(451, 371)
 
-[node name="BasicPlatform" parent="StaticObjects/BasicPlatform" instance=ExtResource("2_dn2bf")]
-position = Vector2(-79, 160)
-
-[node name="BasicPlatform" parent="StaticObjects/BasicPlatform/BasicPlatform" instance=ExtResource("2_dn2bf")]
-position = Vector2(305, 178)
+[node name="BasicPlatform3" parent="StaticObjects" instance=ExtResource("2_dn2bf")]
+position = Vector2(467, 533)
 scale = Vector2(30, 1.175)
+
+[editable path="Player"]

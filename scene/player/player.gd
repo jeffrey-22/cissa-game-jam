@@ -18,6 +18,7 @@ enum AttachDirection { UP, DOWN, LEFT, RIGHT }
 
 func _ready():
 	Globals.player_node = self
+	initiate_hint_squares_update(true, true)
 
 func get_corresponding_direction_vector(attach_direction: AttachDirection) -> Vector2i:
 	match attach_direction:
@@ -96,6 +97,7 @@ func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_directio
 	node_a.add_child(pin_joint_node_d)
 	# record this connection
 	tile_connections.append([node_a, node_b, pin_joint_node_c, pin_joint_node_d])
+	update_hint_squares(true, not(Globals.is_mouse_dragging))
 
 # Central tile
 @onready var central_player_tile_node: PlayerTile = $StartingPlayerTile:
@@ -109,10 +111,12 @@ func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_directio
 		var all_children_node = get_children(false)
 		for child_node in all_children_node:
 			if child_node is PlayerTile:
-				if child_node.is_physics_active():
+				if child_node.is_physics_active:
 					child_node.local_body_position -= local_body_position_difference
 		central_player_tile_node = new_central_player_tile_node
+		update_hint_squares(true, not(Globals.is_mouse_dragging))
 
+# Connected to child_entered_tree signal
 # On child entering, connect the central tile signal if it is a PlayerTile
 func _on_child_entered_tree(node: Node) -> void:
 	if node is PlayerTile:
@@ -124,18 +128,25 @@ func _on_child_entered_tree(node: Node) -> void:
 func _on_promote_central_request(requester_player_tile_node: PlayerTile) -> void:
 	central_player_tile_node = requester_player_tile_node
 	
-func flush_all_connections_and_node_activities(exclude_staying_node: PlayerTile = null) -> void:
+func flush_all_connections_and_node_activities(
+	exclude_staying_node: PlayerTile = null,
+	is_update_hint_squares_required: bool = true,
+	need_to_set_hiding_state: bool = false,
+	set_hiding_state_value: bool = true
+) -> void:
 	var all_children_node = get_children(false)
 	var is_node_staying = {}
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
+			if child_node.is_physics_active:
 				is_node_staying[child_node] = false
 	is_node_staying = dfs_label_as_staying(central_player_tile_node, is_node_staying)
+	
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
-				if not(is_node_staying[child_node]) and child_node != exclude_staying_node:
+			if child_node.is_physics_active:
+				if not(is_node_staying[child_node]) and not(child_node.is_pending_state_change)\
+					and child_node != exclude_staying_node:
 					child_node.detach_by_chain_effect()
 	var deleting_tile_connections = tile_connections.filter(
 		func(connection):
@@ -160,10 +171,22 @@ func flush_all_connections_and_node_activities(exclude_staying_node: PlayerTile 
 				return false
 			return true
 	)
+	if is_update_hint_squares_required:
+		update_hint_squares(need_to_set_hiding_state, set_hiding_state_value)
 	
 # A PlayerTile changes its physics and requests connections to be updated
-func _on_flush_connections(changed_player_tile_node: PlayerTile) -> void:
-	flush_all_connections_and_node_activities(changed_player_tile_node)
+func _on_flush_connections(
+	changed_player_tile_node: PlayerTile,
+	is_update_hint_squares_required: bool = true,
+	need_to_set_hiding_state: bool = false,
+	set_hiding_state_value: bool = true
+) -> void:
+	flush_all_connections_and_node_activities(
+		changed_player_tile_node,
+		is_update_hint_squares_required,
+		need_to_set_hiding_state,
+		set_hiding_state_value
+	)
 
 # Return the average position of all child PlayerTiles
 func get_average_position() -> Vector2:
@@ -172,14 +195,14 @@ func get_average_position() -> Vector2:
 	var all_children_node = get_children(false)
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
+			if child_node.is_physics_active:
 				position_sum += child_node.position
 				child_count += 1
 	return position_sum / child_count
 
 # Detect a node detached, detach others as a chain effect
 func _on_current_player_tile_detached(detached_node: PlayerTile) -> void:
-	flush_all_connections_and_node_activities(detached_node)
+	flush_all_connections_and_node_activities(detached_node, false, true, true)
 	
 func dfs_label_as_staying(current_node: PlayerTile, is_node_staying: Dictionary) -> Dictionary:
 	is_node_staying[current_node] = true
@@ -192,20 +215,19 @@ func dfs_label_as_staying(current_node: PlayerTile, is_node_staying: Dictionary)
 			is_node_staying = dfs_label_as_staying(node_a, is_node_staying)
 	return is_node_staying
 
+@onready var hint_squares: Node2D = $HintSquares
+
+# Have hint squares copy central position always
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_1"):
 		add_tile_connection($StartingPlayerTile, $PlayerTile2, AttachDirection.UP)
-	if Globals.is_mouse_dragging:
-		create_hint_squares()
-	else:
-		clear_hint_squares()
+	hint_squares.set_position(central_player_tile_node.position)
+	hint_squares.set_rotation(central_player_tile_node.rotation)
 
-@onready var hint_squares = $HintSquares
-
-# Have hint squares copy central position always
-func _process(_delta: float) -> void:
-	hint_squares.position = central_player_tile_node.position
-	hint_squares.rotation = central_player_tile_node.rotation
+func update_hint_squares(need_to_set_hiding_state: bool = false, set_hiding_state_value: bool = true) -> void:
+	# avoid refreshing causing flashing
+	await get_tree().physics_frame
+	create_hint_squares(need_to_set_hiding_state, set_hiding_state_value)
 
 # Clear dated hint squares
 func clear_hint_squares() -> void:
@@ -214,19 +236,19 @@ func clear_hint_squares() -> void:
 		dated_hint_square.queue_free()
 	
 # Create hint squares
-func create_hint_squares() -> void:
+func create_hint_squares(need_to_set_hiding_state: bool = false, set_hiding_state_value: bool = true) -> void:
 	var occupied_coordinates = {}
 	var all_children_node = get_children(false)
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
+			if child_node.is_physics_active:
 				occupied_coordinates[child_node.local_body_position] = true
 	# clear dated ones
 	clear_hint_squares()
 	# populate with new ones
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
+			if child_node.is_physics_active:
 				for expand_direction in AttachDirection.values():
 					var new_local_body_position = child_node.local_body_position +\
 						get_corresponding_direction_vector(expand_direction)
@@ -236,26 +258,37 @@ func create_hint_squares() -> void:
 					attempt_to_create_hint_square_at(
 						new_local_body_position * LOCAL_COORDINATE_SCALE,
 						child_node.rotation,
-						new_local_body_position
+						new_local_body_position,
+						need_to_set_hiding_state,
+						set_hiding_state_value
 					)
 
 var hint_square_scene = preload("res://scene/player/hint_square.tscn")
 
 # Create a single hint square at position
-func attempt_to_create_hint_square_at(created_position, copy_rotation, copy_local_position):
-	var hint_square_instance: Node2D = hint_square_scene.instantiate()
+func attempt_to_create_hint_square_at(
+	created_position: Vector2, 
+	_copy_rotation: float, 
+	copy_local_position: Vector2i,
+	need_to_set_hiding_state: bool = false,
+	set_hiding_state_value: bool = true
+):
+	var hint_square_instance: HintSquare = hint_square_scene.instantiate()
 	hint_squares.add_child(hint_square_instance)
 	hint_square_instance.local_body_position = copy_local_position
 	hint_square_instance.position = created_position
-	hint_square_instance.rotate(copy_rotation)
+	if need_to_set_hiding_state:
+		hint_square_instance.is_hiding = set_hiding_state_value
+	# hint_square_instance.rotate(copy_rotation)
 
 # Find nearest hint square. If no hint squares are available return null
 func find_nearest_hint_square(global_search_position) -> HintSquare:
-	create_hint_squares()
-	var all_hint_square = hint_squares.get_children()
+	var all_hint_square = hint_squares.get_children(false)
 	var return_value = null
 	var closest_distance = 0
 	for hint_square in all_hint_square:
+		if hint_square.is_obstructed or hint_square.is_hiding:
+			continue
 		var distance_to_search_position = hint_square.global_position.distance_to(global_search_position)
 		if return_value == null:
 			closest_distance = distance_to_search_position
@@ -276,7 +309,7 @@ func attach_new_node_by_local_position(new_player_tile_node, local_body_position
 	var local_body_position_to_player_tile_lookup = {}
 	for child_node in all_children_node:
 		if child_node is PlayerTile:
-			if child_node.is_physics_active():
+			if child_node.is_physics_active:
 				local_body_position_to_player_tile_lookup[child_node.local_body_position] = child_node
 	for attaching_direction in AttachDirection.values():
 		var sourcing_direction = get_opposite_attach_direction(attaching_direction)
@@ -286,3 +319,17 @@ func attach_new_node_by_local_position(new_player_tile_node, local_body_position
 		if sourcing_player_tile_node != null:
 			add_tile_connection(sourcing_player_tile_node, new_player_tile_node, attaching_direction)
 		
+func show_hint_squares():
+	var all_hint_square = hint_squares.get_children()
+	for hint_square in all_hint_square:
+		hint_square.is_hiding = false
+	
+func hide_hint_squares():
+	var all_hint_square = hint_squares.get_children()
+	for hint_square in all_hint_square:
+		hint_square.is_hiding = true
+
+# Called when all children node ready, on detecting is_dragging change
+# Create hint squares
+func initiate_hint_squares_update(need_to_set_hiding_state: bool = true, set_hiding_state_value: bool = true):
+	update_hint_squares(need_to_set_hiding_state, set_hiding_state_value)

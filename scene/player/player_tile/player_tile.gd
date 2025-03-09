@@ -47,73 +47,89 @@ enum DragState {
 # Current state. Modify through change_drag_state to manage state effects
 var current_drag_state = DragState.UNCOLLECTED
 
-func is_physics_active() -> bool:
-	return current_drag_state == DragState.NORMAL or current_drag_state == DragState.NORMAL_HOVER
+var is_physics_active: bool = false
+
+# Bookkeeping to prevent infinite recursion when detaching by chain effect
+var is_pending_state_change: bool = false
 
 # To fix the joints still working when physics are disabled
-signal flush_connections(changed_player_tile_node: PlayerTile)
+signal flush_connections(
+	changed_player_tile_node: PlayerTile,
+	is_update_hint_squares_required: bool,
+	need_to_set_hiding_state: bool,
+	set_hiding_state_value: bool
+)
 
-func disable_physics() -> void:
+func disable_physics(should_flush: bool = true) -> void:
 	freeze = true
 	collision_shape_node.disabled = true
-	flush_connections.emit(self)
+	is_physics_active = false
+	if should_flush:
+		flush_connections.emit(self, true, true, not(Globals.is_mouse_dragging))
 	
-func enable_physics() -> void:
+func enable_physics(should_flush: bool = true) -> void:
 	freeze = false
 	collision_shape_node.disabled = false
-	flush_connections.emit(self)
+	is_physics_active = true
+	if should_flush:
+		flush_connections.emit(self, true, true, not(Globals.is_mouse_dragging))
 
-func enter_new_drag_state(state: DragState) -> void:
+func enter_new_drag_state(state: DragState, should_flush: bool = true) -> void:
 	match state:
 		DragState.NORMAL:
 			pass
 		DragState.NORMAL_HOVER:
 			animated_sprite_node.scale *= 1.1
 		DragState.DRAGGING:
-			disable_physics()
 			Globals.is_mouse_dragging = true
+			disable_physics(should_flush)
 		DragState.AFLOAT:
-			disable_physics()
+			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
+			disable_physics(should_flush)
 		DragState.AFLOAT_HOVER:
-			disable_physics()
+			disable_physics(should_flush)
+			animated_sprite_node.modulate = Color(1, 1, 1, 0.8)
 			animated_sprite_node.scale *= 1.1
 		DragState.UNCOLLECTED:
-			disable_physics()
+			disable_physics(should_flush)
 		DragState.UNCOLLECTED_HOVER:
-			disable_physics()
+			disable_physics(should_flush)
 			animated_sprite_node.scale *= 1.1
 
-func exit_old_drag_state(state: DragState) -> void:
+func exit_old_drag_state(state: DragState, should_flush: bool = true) -> void:
 	match state:
 		DragState.NORMAL:
 			pass
 		DragState.NORMAL_HOVER:
 			animated_sprite_node.scale /= 1.1
 		DragState.DRAGGING:
-			enable_physics()
 			Globals.is_mouse_dragging = false
+			enable_physics(should_flush)
 		DragState.AFLOAT:
-			enable_physics()
+			enable_physics(should_flush)
+			animated_sprite_node.modulate = Color(1, 1, 1, 1)
 		DragState.AFLOAT_HOVER:
-			enable_physics()
+			enable_physics(should_flush)
+			animated_sprite_node.modulate = Color(1, 1, 1, 1)
 			animated_sprite_node.scale /= 1.1
 		DragState.UNCOLLECTED:
-			enable_physics()
+			enable_physics(should_flush)
 		DragState.UNCOLLECTED_HOVER:
-			enable_physics()
+			enable_physics(should_flush)
 			animated_sprite_node.scale /= 1.1
 
 # Main way to change drag state
-func change_drag_state(new_state: DragState) -> void:
+func change_drag_state(new_state: DragState, should_flush: bool = true) -> void:
 	if current_drag_state == new_state:
 		return
-	exit_old_drag_state(current_drag_state)
-	enter_new_drag_state(new_state)
+	exit_old_drag_state(current_drag_state, should_flush)
+	enter_new_drag_state(new_state, should_flush)
 	current_drag_state = new_state
 
 func _ready() -> void:
 	if is_starting_tile:
 		current_drag_state = DragState.NORMAL
+		is_physics_active = true
 		promote_central()
 		freeze = false
 
@@ -130,7 +146,9 @@ func get_distance_from_sprite_center_to_certain_edge(move_direction: Player.Atta
 	return 0
 
 func detach_by_chain_effect() -> void:
-	change_drag_state(DragState.AFLOAT)
+	is_pending_state_change = true
+	change_drag_state(DragState.AFLOAT, false)
+	is_pending_state_change = false
 
 # Change appearance based on whether node is central
 func cancel_central() -> void:
@@ -150,7 +168,7 @@ signal current_player_tile_detached(current_node: PlayerTile)
 func _on_mouse_detect_area_2d_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			if not(is_central_tile) and is_physics_active():
+			if not(is_central_tile) and is_physics_active:
 				promote_central_request.emit(self)
 				get_viewport().set_input_as_handled()
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -159,12 +177,15 @@ func _on_mouse_detect_area_2d_input_event(_viewport: Node, event: InputEvent, _s
 					drag_offset = global_position - get_global_mouse_position()
 					current_player_tile_detached.emit(self)
 					change_drag_state(DragState.DRAGGING)
+					get_viewport().set_input_as_handled()
 				DragState.AFLOAT_HOVER:
 					drag_offset = global_position - get_global_mouse_position()
 					change_drag_state(DragState.DRAGGING)
+					get_viewport().set_input_as_handled()
 				DragState.UNCOLLECTED_HOVER:
 					drag_offset = global_position - get_global_mouse_position()
 					change_drag_state(DragState.DRAGGING)
+					get_viewport().set_input_as_handled()
 
 # Decide if need to cancel dragging / update drag position
 func _unhandled_input(event: InputEvent) -> void:
@@ -180,6 +201,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					else:
 						player_node.attach_new_node_by_local_position(self, target_hint_square.local_body_position)
 						change_drag_state(DragState.NORMAL)
+					get_viewport().set_input_as_handled()
 	if event is InputEventMouseMotion and current_drag_state == DragState.DRAGGING:
 		global_position = get_global_mouse_position() + drag_offset
 
@@ -217,4 +239,6 @@ func _on_mouse_detect_area_2d_mouse_exited() -> void:
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("debug_2"):
-		print(str(self) + " @ local " + str(local_body_position) + " @ state " + str(current_drag_state))
+		print(str(self) + " @ local " + str(local_body_position) +\
+			" @ state " + str(current_drag_state) +\
+			" @ physics active = " + str(is_physics_active))

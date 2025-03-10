@@ -16,7 +16,7 @@ func get_main_player_body_target_position() -> Vector2:
 	return player_node.get_average_position()
 
 func _ready() -> void:
-	zoom = Vector2.ONE * 2.0
+	zoom = Vector2.ONE * 2.2
 
 func _process(_delta: float) -> void:
 	position_smoothing_speed = smoothing_speed

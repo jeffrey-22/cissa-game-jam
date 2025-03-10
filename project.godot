@@ -53,6 +53,12 @@ debug_5={
 2d_physics/layer_3="PlayerTile in floating/dragging state"
 2d_physics/layer_4="Hint square"
 
+[physics]
+
+common/physics_ticks_per_second=120
+common/physics_jitter_fix=0.6
+2d/default_gravity=750.0
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

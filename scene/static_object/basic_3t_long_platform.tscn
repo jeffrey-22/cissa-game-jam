@@ -1,15 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://bpg55ehd528rm"]
 
 [ext_resource type="PackedScene" uid="uid://b621oybhp1vaj" path="res://scene/static_object/basic_platform.tscn" id="1_th7ch"]
-[ext_resource type="Texture2D" uid="uid://clsqt00yintjm" path="res://asset/self_made/graphic/object/basic_3t_long_platform.png" id="2_jfiio"]
+[ext_resource type="Texture2D" uid="uid://cgdad6q853djo" path="res://asset/self_made/graphic/object/basic_3t_long_platform.png" id="2_jfiio"]
 
 [node name="Basic3TLongPlatform" instance=ExtResource("1_th7ch")]
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_jfiio")
 
-[node name="CollisionShape2D" parent="." index="1"]
-shape = null
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." index="2"]
+[node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="." index="1"]
 polygon = PackedVector2Array(-47, -13, -47, 13, 47, 13, 47, -13)

@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://b713cpfx2oqhk"]
+[gd_scene load_steps=9 format=3 uid="uid://b713cpfx2oqhk"]
 
 [ext_resource type="PackedScene" uid="uid://d3x1ygk5eo61e" path="res://scene/camera/camera.tscn" id="1_234gi"]
 [ext_resource type="PackedScene" uid="uid://bpc7e4rar1o0k" path="res://scene/player/player.tscn" id="2_r3wmh"]
 [ext_resource type="PackedScene" uid="uid://bcjbvhavit4n4" path="res://scene/user_interface/user_interface.tscn" id="3_3tk3r"]
 [ext_resource type="PackedScene" uid="uid://cy2ob2r4teaot" path="res://scene/static_object/long_ground_platform.tscn" id="3_vyipp"]
-[ext_resource type="PackedScene" uid="uid://d3ywdy5wvkdly" path="res://scene/static_object/floor_1_platform.tscn" id="4_3pmnv"]
+[ext_resource type="PackedScene" uid="uid://gksl862cdd73" path="res://scene/static_object/floor_1_platforms.tscn" id="4_5oowe"]
 [ext_resource type="PackedScene" uid="uid://bpg55ehd528rm" path="res://scene/static_object/basic_3t_long_platform.tscn" id="5_nfv37"]
 [ext_resource type="PackedScene" uid="uid://djges53rq0x7m" path="res://scene/background_objects/MainBackgroundTileMapLayer.tscn" id="6_108wl"]
+[ext_resource type="PackedScene" uid="uid://cescvnn2n7f6p" path="res://scene/static_object/floor_2_platforms.tscn" id="6_be2mt"]
 
 [node name="MainLevel" type="Node"]
 
@@ -37,11 +38,11 @@ rotation = 1.5708
 scale = Vector2(10, 1)
 
 [node name="Floor1" type="Node2D" parent="StaticObjects"]
-metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
-[node name="Floor1Plarform" parent="StaticObjects/Floor1" instance=ExtResource("4_3pmnv")]
-position = Vector2(640, -208)
+[node name="Floor1Platforms" parent="StaticObjects/Floor1" instance=ExtResource("4_5oowe")]
+position = Vector2(632, -208)
 
 [node name="Basic3TLongPlatform" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
 position = Vector2(949, -321)
@@ -61,6 +62,11 @@ scale = Vector2(1.1, 1)
 
 [node name="Basic3TLongPlatform6" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
 position = Vector2(170, -375)
+
+[node name="Floor2" type="Node2D" parent="StaticObjects"]
+
+[node name="Floor2Platforms" parent="StaticObjects/Floor2" instance=ExtResource("6_be2mt")]
+position = Vector2(644, -623)
 
 [node name="BackgroundObjects" type="Node2D" parent="."]
 

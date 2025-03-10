@@ -258,8 +258,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # Threshold for when reached, detach the current tile
 # A hacky solution to prevent some sort of perpetual motion generator
-@export var linear_momentum_detach_threshold = 900.0
-@export var angular_momentum_detach_threshold = 6.5
+@export var linear_momentum_detach_threshold = 1400.0
+@export var angular_momentum_detach_threshold = 8.0
 
 # Decide if there are needs for state updates
 func _physics_process(delta: float) -> void:

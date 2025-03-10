@@ -1,20 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://b713cpfx2oqhk"]
+[gd_scene load_steps=8 format=3 uid="uid://b713cpfx2oqhk"]
 
 [ext_resource type="PackedScene" uid="uid://d3x1ygk5eo61e" path="res://scene/camera/camera.tscn" id="1_234gi"]
 [ext_resource type="PackedScene" uid="uid://bpc7e4rar1o0k" path="res://scene/player/player.tscn" id="2_r3wmh"]
 [ext_resource type="PackedScene" uid="uid://bcjbvhavit4n4" path="res://scene/user_interface/user_interface.tscn" id="3_3tk3r"]
 [ext_resource type="PackedScene" uid="uid://cy2ob2r4teaot" path="res://scene/static_object/long_ground_platform.tscn" id="3_vyipp"]
+[ext_resource type="PackedScene" uid="uid://d3ywdy5wvkdly" path="res://scene/static_object/floor_1_platform.tscn" id="4_3pmnv"]
+[ext_resource type="PackedScene" uid="uid://bpg55ehd528rm" path="res://scene/static_object/basic_3t_long_platform.tscn" id="5_nfv37"]
+[ext_resource type="PackedScene" uid="uid://djges53rq0x7m" path="res://scene/background_objects/MainBackgroundTileMapLayer.tscn" id="6_108wl"]
 
 [node name="MainLevel" type="Node"]
 
 [node name="Camera" parent="." instance=ExtResource("1_234gi")]
 limit_right = 1280
+metadata/_edit_lock_ = true
 
 [node name="Player" parent="." instance=ExtResource("2_r3wmh")]
+metadata/_edit_lock_ = true
 
 [node name="StaticObjects" type="Node2D" parent="."]
 
 [node name="Boundary" type="Node2D" parent="StaticObjects"]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="LongGroundPlatform" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
 position = Vector2(640, -24)
@@ -29,6 +36,36 @@ position = Vector2(1264, -16000)
 rotation = 1.5708
 scale = Vector2(10, 1)
 
+[node name="Floor1" type="Node2D" parent="StaticObjects"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="Floor1Plarform" parent="StaticObjects/Floor1" instance=ExtResource("4_3pmnv")]
+position = Vector2(640, -208)
+
+[node name="Basic3TLongPlatform" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(949, -321)
+
+[node name="Basic3TLongPlatform2" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(855, -394)
+
+[node name="Basic3TLongPlatform3" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(684, -322)
+
+[node name="Basic3TLongPlatform4" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(511, -322)
+
+[node name="Basic3TLongPlatform5" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(336, -322)
+scale = Vector2(1.1, 1)
+
+[node name="Basic3TLongPlatform6" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(170, -375)
+
 [node name="BackgroundObjects" type="Node2D" parent="."]
+
+[node name="Floor1" type="Node2D" parent="BackgroundObjects"]
+
+[node name="MainBackgroundTileMapLayer" parent="BackgroundObjects/Floor1" instance=ExtResource("6_108wl")]
 
 [node name="UserInterface" parent="." instance=ExtResource("3_3tk3r")]

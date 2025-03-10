@@ -11,23 +11,26 @@ position = Vector2(73, -64)
 is_starting_tile = true
 
 [node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(176, -96)
+position = Vector2(73, -119)
 
 [node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(176, -128)
+position = Vector2(205, -160)
 
 [node name="PlayerTile4" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(469, -64)
 
 [node name="PlayerTile3" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(208, -96)
+position = Vector2(191, -96)
 
 [node name="PlayerTile5" parent="." instance=ExtResource("2_3ac41")]
-position = Vector2(208, -128)
+position = Vector2(198, -128)
 
 [node name="PlayerTile6" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(71, -635)
 rotation = 0.253073
+
+[node name="PlayerTileF1" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(666, -1055)
 
 [node name="HintSquares" type="Node2D" parent="."]
 

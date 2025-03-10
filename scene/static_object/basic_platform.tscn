@@ -1,16 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://b621oybhp1vaj"]
 
-[ext_resource type="Texture2D" uid="uid://6t044hqid5mg" path="res://asset/self_made/graphic/object/black_square.png" id="1_84ppl"]
+[ext_resource type="Texture2D" uid="uid://6t044hqid5mg" path="res://asset/self_made/graphic/object/black_square.png" id="1_gm5n4"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kxcm5"]
-friction = 0.85
-bounce = 0.15
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ayewy"]
+friction = 0.75
+bounce = 0.02
 
 [node name="BasicPlatform" type="StaticBody2D"]
 z_index = 5
 collision_layer = 2
 collision_mask = 3
-physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+physics_material_override = SubResource("PhysicsMaterial_ayewy")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_84ppl")
+texture = ExtResource("1_gm5n4")

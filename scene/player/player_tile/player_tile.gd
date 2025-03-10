@@ -258,8 +258,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # Threshold for when reached, detach the current tile
 # A hacky solution to prevent some sort of perpetual motion generator
-@export var linear_momentum_detach_threshold = 1400.0
-@export var angular_momentum_detach_threshold = 8.0
+@export var linear_momentum_detach_threshold = 3000.0
+@export var angular_momentum_detach_threshold = 13.0
+
+# Threshold for how far the central tile is to the uncollected tile so that
+# it can be picked up. In pixels.
+const COLLECTABLE_REACH_DISTANCE_THRESHOLD = 120.0
 
 # Decide if there are needs for state updates
 func _physics_process(delta: float) -> void:
@@ -319,8 +323,11 @@ func _physics_process(delta: float) -> void:
 			if not(is_mouse_hovering):
 				change_drag_state(DragState.AFLOAT)
 		DragState.UNCOLLECTED:
-			if is_mouse_hovering:
-				change_drag_state(DragState.UNCOLLECTED_HOVER)
+			var player_node = Globals.player_node
+			var central_player_tile = player_node.central_player_tile_node
+			var distance_difference = position.distance_to(central_player_tile.position)
+			if distance_difference < COLLECTABLE_REACH_DISTANCE_THRESHOLD:
+				change_drag_state(DragState.AFLOAT)
 		DragState.UNCOLLECTED_HOVER:
 			if not(is_mouse_hovering):
 				change_drag_state(DragState.UNCOLLECTED)
@@ -332,9 +339,3 @@ func _on_mouse_detect_area_2d_mouse_entered() -> void:
 # Connected to MouseDetectArea2D
 func _on_mouse_detect_area_2d_mouse_exited() -> void:
 	is_mouse_hovering = false
-
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("debug_2"):
-		print(str(self) + " @ local " + str(local_body_position) +\
-			" @ state " + str(current_drag_state) +\
-			" @ physics active = " + str(is_physics_active))

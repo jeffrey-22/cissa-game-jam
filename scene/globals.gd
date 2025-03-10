@@ -10,3 +10,5 @@ extends Node
 var player_node: Player
 
 var is_mouse_dragging: bool = false
+
+var user_interface_node: UserInterface

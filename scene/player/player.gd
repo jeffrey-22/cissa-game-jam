@@ -59,6 +59,7 @@ var tile_connections: Array[Array] = []
 # Needs to be called during a physics process lapse!
 # TODO: Make it less hacky, for polishing purposes
 func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_direction: AttachDirection) -> void:
+	await get_tree().physics_frame
 	# update node_b's local position, global position and rotation to follow node_a
 	var attach_direction_vector = get_corresponding_direction_vector(attach_direction)
 	node_b.local_body_position = node_a.local_body_position + attach_direction_vector
@@ -98,8 +99,6 @@ func add_tile_connection(node_a: PlayerTile, node_b: PlayerTile, attach_directio
 	# record this connection
 	tile_connections.append([node_a, node_b, pin_joint_node_c, pin_joint_node_d])
 	update_hint_squares(true, not(Globals.is_mouse_dragging))
-	await get_tree().physics_frame
-	node_b.global_transform.origin = node_a.position + position_difference_vector
 
 # Central tile
 @onready var central_player_tile_node: PlayerTile = $StartingPlayerTile:
@@ -387,15 +386,34 @@ func get_usable_player_tile_count() -> int:
 				count += 1
 	return count
 	
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("debug_1"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				child_node.global_transform.origin.y -= 32
-	if Input.is_action_just_pressed("debug_2"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				child_node.global_transform.origin.y -= 256
+#func _process(_delta: float) -> void:
+	#if Input.is_action_just_pressed("debug_1"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#child_node.global_transform.origin.y -= 32
+	#if Input.is_action_just_pressed("debug_2"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.y -= 256
+	#if Input.is_action_just_pressed("debug_3"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state == PlayerTile.DragState.UNCOLLECTED:
+					#child_node.change_drag_state(PlayerTile.DragState.AFLOAT)
+	#if Input.is_action_just_pressed("debug_4"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.x -= 64
+	#if Input.is_action_just_pressed("debug_5"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.x += 64
 		

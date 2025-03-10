@@ -21,6 +21,8 @@ func start_ending_sequence() -> void:
 	if is_ending_sequence_called:
 		return
 	is_ending_sequence_called = true
+	color_rect.visible = true
+	label.visible = true
 	var tween = get_tree().create_tween()
 	tween.tween_property(color_rect, "modulate:a", 1.0, 6.0) # Fade in over 3 seconds
 	tween.parallel().tween_property(label, "modulate:a", 1.0, 6.0) # Fade in over 3 seconds

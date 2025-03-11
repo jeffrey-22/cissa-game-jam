@@ -12,8 +12,18 @@ script = ExtResource("1_pna28")
 position = Vector2(73, -64)
 is_starting_tile = true
 
+[node name="SleepingParticles" parent="StartingPlayerTile" index="4"]
+visible = false
+
 [node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(73, -119)
+
+[node name="AnimatedSprite2D" parent="PlayerTile2" index="1"]
+animation = &"default_idle"
+frame_progress = 0.0
+
+[node name="SleepingParticles" parent="PlayerTile2" index="4"]
+visible = false
 
 [node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
 position = Vector2(205, -160)
@@ -45,3 +55,6 @@ stream = ExtResource("4_8ahfn")
 volume_db = -15.0
 
 [connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
+
+[editable path="StartingPlayerTile"]
+[editable path="PlayerTile2"]

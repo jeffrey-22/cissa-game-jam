@@ -124,18 +124,24 @@ func enable_physics(should_flush: bool = true) -> void:
 func enter_new_drag_state(state: DragState, should_flush: bool = true) -> void:
 	match state:
 		DragState.NORMAL:
+			sleeping_particles_node.visible = false
 			pass
 		DragState.NORMAL_HOVER:
+			sleeping_particles_node.visible = false
 			animated_sprite_node.scale *= 1.1
 		DragState.DRAGGING:
+			sleeping_particles_node.visible = false
 			Globals.is_mouse_dragging = true
 			disable_physics(should_flush)
 		DragState.AFLOAT:
+			sleeping_particles_node.visible = false
 			animated_sprite_node.modulate = Color(0.7, 0.8, 0.6, 1)
 			# first disable physics then decide new position
 			disable_physics(should_flush)
+			animated_sprite_node.play("default_idle")
 			afloat_target_global_position = get_new_afloat_target_position()
 		DragState.AFLOAT_HOVER:
+			sleeping_particles_node.visible = false
 			disable_physics(should_flush)
 			animated_sprite_node.modulate = Color(0.7, 0.8, 0.6, 1)
 			animated_sprite_node.scale *= 1.1
@@ -144,6 +150,8 @@ func enter_new_drag_state(state: DragState, should_flush: bool = true) -> void:
 		DragState.UNCOLLECTED_HOVER:
 			disable_physics(should_flush)
 			animated_sprite_node.scale *= 1.1
+
+@onready var sleeping_particles_node = $SleepingParticles
 
 func exit_old_drag_state(state: DragState, should_flush: bool = true) -> void:
 	match state:
@@ -166,6 +174,8 @@ func exit_old_drag_state(state: DragState, should_flush: bool = true) -> void:
 		DragState.UNCOLLECTED_HOVER:
 			enable_physics(should_flush)
 			animated_sprite_node.scale /= 1.1
+			#animated_sprite_node.play("default_idle")
+			sleeping_particles_node.visible = false
 
 # Main way to change drag state
 func change_drag_state(new_state: DragState, should_flush: bool = true) -> void:
@@ -181,6 +191,7 @@ func _ready() -> void:
 		is_physics_active = true
 		promote_central()
 		freeze = false
+		animated_sprite_node.play("central_idle")
 
 func get_distance_from_sprite_center_to_certain_edge(move_direction: Player.AttachDirection):
 	match move_direction:

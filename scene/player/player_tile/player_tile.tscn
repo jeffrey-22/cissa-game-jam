@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cpxhsojhdtkyx"]
+[gd_scene load_steps=18 format=3 uid="uid://cpxhsojhdtkyx"]
 
 [ext_resource type="Script" path="res://scene/player/player_tile/player_tile.gd" id="1_i42h4"]
 [ext_resource type="Texture2D" uid="uid://wlicu61qw1lg" path="res://asset/self_made/graphic/player_tile/basic_blue_tile.png" id="2_ocq27"]
 [ext_resource type="Texture2D" uid="uid://de664c0m3553r" path="res://asset/self_made/graphic/player_tile/basic_orange_tile.png" id="2_sulo8"]
+[ext_resource type="Texture2D" uid="uid://cfu5io8axkct0" path="res://asset/self_made/graphic/player_tile/sleeping_player_tile-Sheet.png" id="4_sv4ft"]
+[ext_resource type="Texture2D" uid="uid://c3numpldtwyey" path="res://asset/self_made/graphic/player_tile/blue_z.png" id="5_r5avl"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1vyo1"]
 
@@ -12,6 +14,22 @@ point_count = 4
 
 [sub_resource type="Gradient" id="Gradient_ip6a1"]
 colors = PackedColorArray(0.890196, 0, 0.870588, 0.635294, 0.952941, 0.941176, 0, 0.517647)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4oogj"]
+atlas = ExtResource("4_sv4ft")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kds47"]
+atlas = ExtResource("4_sv4ft")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aiojm"]
+atlas = ExtResource("4_sv4ft")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ghi7"]
+atlas = ExtResource("4_sv4ft")
+region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_igqnm"]
 animations = [{
@@ -30,10 +48,43 @@ animations = [{
 "loop": true,
 "name": &"default_idle",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4oogj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kds47")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aiojm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ghi7")
+}],
+"loop": true,
+"name": &"sleeping",
+"speed": 2.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpxrs"]
 size = Vector2(32, 32)
+
+[sub_resource type="Gradient" id="Gradient_0nc74"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qpbtw"]
+gradient = SubResource("Gradient_0nc74")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y7tml"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(16, -16, 0)
+direction = Vector3(1, -1, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, -20, 0)
+scale_min = 0.2
+color_ramp = SubResource("GradientTexture1D_qpbtw")
 
 [node name="PlayerTile" type="RigidBody2D"]
 collision_mask = 2
@@ -54,7 +105,8 @@ gradient = SubResource("Gradient_ip6a1")
 z_index = 10
 y_sort_enabled = true
 sprite_frames = SubResource("SpriteFrames_igqnm")
-animation = &"default_idle"
+animation = &"sleeping"
+frame_progress = 0.162086
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dpxrs")
@@ -63,6 +115,12 @@ shape = SubResource("RectangleShape2D_dpxrs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MouseDetectArea2D"]
 shape = SubResource("RectangleShape2D_dpxrs")
+
+[node name="SleepingParticles" type="GPUParticles2D" parent="."]
+z_index = 11
+amount = 2
+process_material = SubResource("ParticleProcessMaterial_y7tml")
+texture = ExtResource("5_r5avl")
 
 [connection signal="input_event" from="MouseDetectArea2D" to="." method="_on_mouse_detect_area_2d_input_event"]
 [connection signal="mouse_entered" from="MouseDetectArea2D" to="." method="_on_mouse_detect_area_2d_mouse_entered"]

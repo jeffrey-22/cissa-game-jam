@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dipmwrcx1kkyp"]
+[gd_scene load_steps=6 format=3 uid="uid://dipmwrcx1kkyp"]
 
 [ext_resource type="Script" path="res://scripts/start.gd" id="1_q75j3"]
 [ext_resource type="Texture2D" uid="uid://cartokw54m2qv" path="res://asset/self_made/user_interface/Screenshot_2025-03-11_at_1.03.28_pm-removebg-preview.png" id="2_io7iy"]
@@ -7,9 +7,6 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_csqvw"]
 font_size = 23
-
-[sub_resource type="LabelSettings" id="LabelSettings_bfhk0"]
-font_size = 22
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_q75j3")
@@ -47,14 +44,6 @@ offset_bottom = 196.0
 texture_normal = ExtResource("2_io7iy")
 texture_pressed = ExtResource("3_dhb7d")
 stretch_mode = 5
-
-[node name="Label3" type="Label" parent="TextureButton"]
-offset_left = 638.0
-offset_top = 273.0
-offset_right = 783.0
-offset_bottom = 304.0
-text = "Vecteezy.com"
-label_settings = SubResource("LabelSettings_bfhk0")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.3, 0.3)

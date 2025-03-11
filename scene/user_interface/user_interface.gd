@@ -32,4 +32,5 @@ func start_ending_sequence() -> void:
 	label.text += "\nWinter Pixel Art Asset Pack by haladrias"
 	label.text += "\nIndustrial Tileset assets by Atomic Realm"
 	label.text += "\nPixelated UI sfx by Atelier Magicae"
+	label.text += "\nStart button from Vecteezy.com"
 	

@@ -1,26 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://dipmwrcx1kkyp"]
+[gd_scene load_steps=7 format=3 uid="uid://dipmwrcx1kkyp"]
 
 [ext_resource type="Script" path="res://scripts/start.gd" id="1_q75j3"]
 [ext_resource type="Texture2D" uid="uid://cartokw54m2qv" path="res://asset/self_made/user_interface/Screenshot_2025-03-11_at_1.03.28_pm-removebg-preview.png" id="2_io7iy"]
 [ext_resource type="Texture2D" uid="uid://bmtvjsqksmrxb" path="res://asset/self_made/user_interface/Screenshot_2025-03-11_at_1.02.49_pm-removebg-preview.png" id="3_dhb7d"]
 [ext_resource type="Texture2D" uid="uid://rd5fobw66ff7" path="res://asset/self_made/user_interface/8bit-pixel-art-night-sky-game-space-landscape-vector.jpg" id="4_io7iy"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_csqvw"]
+font_size = 23
+
+[sub_resource type="LabelSettings" id="LabelSettings_bfhk0"]
+font_size = 22
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_q75j3")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.3, 0.3)
-
-[node name="TextureButton" type="TextureButton" parent="Camera2D"]
-z_index = 1
-custom_minimum_size = Vector2(1, 1)
-offset_left = -400.0
-offset_top = -116.0
-offset_right = 401.0
-offset_bottom = 196.0
-texture_normal = ExtResource("2_io7iy")
-texture_pressed = ExtResource("3_dhb7d")
-stretch_mode = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(32, 26)
@@ -37,5 +29,35 @@ offset_bottom = 1494.0
 theme_override_font_sizes/font_size = 100
 text = "Makers: Ethan, Bryan, Jeffery, Will"
 
-[connection signal="pressed" from="Camera2D/TextureButton" to="." method="_on_texture_button_pressed"]
-[connection signal="ready" from="Camera2D/TextureButton" to="." method="_on_texture_button_ready"]
+[node name="Label2" type="Label" parent="."]
+offset_left = 1680.0
+offset_top = 1037.0
+offset_right = 1904.0
+offset_bottom = 1069.0
+text = "Designed by Freepik"
+label_settings = SubResource("LabelSettings_csqvw")
+
+[node name="TextureButton" type="TextureButton" parent="."]
+z_index = 1
+custom_minimum_size = Vector2(1, 1)
+offset_left = -400.0
+offset_top = -116.0
+offset_right = 401.0
+offset_bottom = 196.0
+texture_normal = ExtResource("2_io7iy")
+texture_pressed = ExtResource("3_dhb7d")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="TextureButton"]
+offset_left = 638.0
+offset_top = 273.0
+offset_right = 783.0
+offset_bottom = 304.0
+text = "Vecteezy.com"
+label_settings = SubResource("LabelSettings_bfhk0")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.3, 0.3)
+
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]
+[connection signal="ready" from="TextureButton" to="." method="_on_texture_button_ready"]

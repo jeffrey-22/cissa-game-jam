@@ -11,6 +11,12 @@ var local_body_position: Vector2i
 
 @onready var sprite_node = $Sprite2D
 
+# Hide the sprite when spawned and wait for 2 frames
+func _ready():
+	visible = false 
+	await get_tree().process_frame
+	visible = true 
+
 # Is requested to be hiding
 var is_hiding: bool = false:
 	set(new_value):

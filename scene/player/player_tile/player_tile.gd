@@ -250,7 +250,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					else:
 						player_node.attach_new_node_by_local_position(self, target_hint_square.local_body_position)
 						change_drag_state(DragState.NORMAL)
-					get_viewport().set_input_as_handled()
+					get_viewport().set_input_as_handled() 
 	if event is InputEventMouseMotion and current_drag_state == DragState.DRAGGING:
 		global_position = get_global_mouse_position() + drag_offset
 
@@ -327,6 +327,7 @@ func _physics_process(delta: float) -> void:
 			var central_player_tile = player_node.central_player_tile_node
 			var distance_difference = position.distance_to(central_player_tile.position)
 			if distance_difference < COLLECTABLE_REACH_DISTANCE_THRESHOLD:
+				player_node.play_wake_sfx()
 				change_drag_state(DragState.AFLOAT)
 		DragState.UNCOLLECTED_HOVER:
 			if not(is_mouse_hovering):

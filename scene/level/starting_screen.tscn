@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvqyn5jc3c2ad"]
+[gd_scene load_steps=5 format=3 uid="uid://dipmwrcx1kkyp"]
 
-[ext_resource type="Script" uid="uid://b52m1cma3mqc7" path="res://scripts/start.gd" id="1_q75j3"]
+[ext_resource type="Script" path="res://scripts/start.gd" id="1_q75j3"]
 [ext_resource type="Texture2D" uid="uid://cartokw54m2qv" path="res://asset/self_made/user_interface/Screenshot_2025-03-11_at_1.03.28_pm-removebg-preview.png" id="2_io7iy"]
 [ext_resource type="Texture2D" uid="uid://bmtvjsqksmrxb" path="res://asset/self_made/user_interface/Screenshot_2025-03-11_at_1.02.49_pm-removebg-preview.png" id="3_dhb7d"]
 [ext_resource type="Texture2D" uid="uid://rd5fobw66ff7" path="res://asset/self_made/user_interface/8bit-pixel-art-night-sky-game-space-landscape-vector.jpg" id="4_io7iy"]
@@ -14,10 +14,10 @@ zoom = Vector2(0.3, 0.3)
 [node name="TextureButton" type="TextureButton" parent="Camera2D"]
 z_index = 1
 custom_minimum_size = Vector2(1, 1)
-offset_left = -407.0
-offset_top = -287.0
-offset_right = 394.0
-offset_bottom = 25.0
+offset_left = -400.0
+offset_top = -116.0
+offset_right = 401.0
+offset_bottom = 196.0
 texture_normal = ExtResource("2_io7iy")
 texture_pressed = ExtResource("3_dhb7d")
 stretch_mode = 5
@@ -26,14 +26,16 @@ stretch_mode = 5
 position = Vector2(32, 26)
 scale = Vector2(5.19875, 5.9825)
 texture = ExtResource("4_io7iy")
+metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="."]
-offset_left = -729.0
-offset_top = 225.0
-offset_right = 882.0
-offset_bottom = 657.0
+visible = false
+offset_left = -818.0
+offset_top = 1062.0
+offset_right = 807.0
+offset_bottom = 1494.0
 theme_override_font_sizes/font_size = 100
-text = "Credits: Ethan, Bryan, Jeffery, Will"
+text = "Makers: Ethan, Bryan, Jeffery, Will"
 
 [connection signal="pressed" from="Camera2D/TextureButton" to="." method="_on_texture_button_pressed"]
 [connection signal="ready" from="Camera2D/TextureButton" to="." method="_on_texture_button_ready"]

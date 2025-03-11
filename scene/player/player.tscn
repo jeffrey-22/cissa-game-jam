@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpc7e4rar1o0k"]
+
+[ext_resource type="Script" path="res://scene/player/player.gd" id="1_pna28"]
+[ext_resource type="PackedScene" uid="uid://cpxhsojhdtkyx" path="res://scene/player/player_tile/player_tile.tscn" id="2_3ac41"]
+[ext_resource type="AudioStream" uid="uid://byste4ierkdrx" path="res://asset/pack/--Pixelated UI/--Pixelated UI/Pixel_05.wav" id="3_wffle"]
+[ext_resource type="AudioStream" uid="uid://cmn4q8h8ipw1o" path="res://asset/pack/--Pixelated UI/--Pixelated UI/Pixel_24.wav" id="4_8ahfn"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_pna28")
+
+[node name="StartingPlayerTile" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(73, -64)
+is_starting_tile = true
+
+[node name="PlayerTile2" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(73, -119)
+
+[node name="PlayerTile" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(205, -160)
+
+[node name="PlayerTile4" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(469, -64)
+
+[node name="PlayerTile3" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(191, -96)
+
+[node name="PlayerTile5" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(198, -128)
+
+[node name="PlayerTile6" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(71, -635)
+rotation = 0.253073
+
+[node name="PlayerTileF1" parent="." instance=ExtResource("2_3ac41")]
+position = Vector2(666, -1055)
+
+[node name="HintSquares" type="Node2D" parent="."]
+
+[node name="AttachAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_wffle")
+volume_db = -15.0
+
+[node name="WakeAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_8ahfn")
+volume_db = -15.0
+
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]

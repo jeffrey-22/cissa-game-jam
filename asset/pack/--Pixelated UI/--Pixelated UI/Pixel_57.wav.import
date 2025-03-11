@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://buayb7gajheia"
+path="res://.godot/imported/Pixel_57.wav-92d323e1e3f79b077082ee29f01b12bb.sample"
+
+[deps]
+
+source_file="res://asset/pack/--Pixelated UI/--Pixelated UI/Pixel_57.wav"
+dest_files=["res://.godot/imported/Pixel_57.wav-92d323e1e3f79b077082ee29f01b12bb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

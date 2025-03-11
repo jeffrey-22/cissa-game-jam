@@ -1,0 +1,147 @@
+[gd_scene load_steps=17 format=3 uid="uid://b713cpfx2oqhk"]
+
+[ext_resource type="PackedScene" uid="uid://d3x1ygk5eo61e" path="res://scene/camera/camera.tscn" id="1_234gi"]
+[ext_resource type="PackedScene" uid="uid://bpc7e4rar1o0k" path="res://scene/player/player.tscn" id="2_r3wmh"]
+[ext_resource type="PackedScene" uid="uid://bcjbvhavit4n4" path="res://scene/user_interface/user_interface.tscn" id="3_3tk3r"]
+[ext_resource type="PackedScene" uid="uid://cy2ob2r4teaot" path="res://scene/static_object/long_ground_platform.tscn" id="3_vyipp"]
+[ext_resource type="PackedScene" uid="uid://gksl862cdd73" path="res://scene/static_object/floor_1_platforms.tscn" id="4_5oowe"]
+[ext_resource type="PackedScene" uid="uid://bpg55ehd528rm" path="res://scene/static_object/basic_3t_long_platform.tscn" id="5_nfv37"]
+[ext_resource type="PackedScene" uid="uid://djges53rq0x7m" path="res://scene/background_objects/MainBackgroundTileMapLayer.tscn" id="6_108wl"]
+[ext_resource type="PackedScene" uid="uid://cescvnn2n7f6p" path="res://scene/static_object/floor_2_platforms.tscn" id="6_be2mt"]
+[ext_resource type="PackedScene" uid="uid://d3bsx71rln7rx" path="res://scene/static_object/floor_3_platforms.tscn" id="7_xksnc"]
+[ext_resource type="Texture2D" uid="uid://dxivgaj0iycnp" path="res://asset/pack/Glacial-mountains-parallax-background_vnitti/background_glacial_mountains.png" id="9_6ohrm"]
+[ext_resource type="Texture2D" uid="uid://cevvtlfiw6ygv" path="res://asset/pack/PixelFantasy_Caves_1.0/background2.png" id="9_amu7l"]
+[ext_resource type="Texture2D" uid="uid://b12es5did3ykm" path="res://asset/pack/[FREE] Industrial Tileset/5. Industrial Tileset - Starter Pack 32p/3_Far_Background_Tile.png" id="9_veuap"]
+[ext_resource type="PackedScene" uid="uid://2ypc7q8aj621" path="res://scene/particles/snow_particles.tscn" id="12_f5m7d"]
+[ext_resource type="Script" uid="uid://crfmu0h4u6hey" path="res://scene/level/ending_trigger_area_2d.gd" id="12_t6jab"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kxcm5"]
+friction = 0.85
+bounce = 0.15
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kq0k3"]
+size = Vector2(310, 171)
+
+[node name="MainLevel" type="Node"]
+
+[node name="Camera" parent="." instance=ExtResource("1_234gi")]
+limit_right = 1280
+metadata/_edit_lock_ = true
+
+[node name="Player" parent="." instance=ExtResource("2_r3wmh")]
+metadata/_edit_lock_ = true
+
+[node name="StaticObjects" type="Node2D" parent="."]
+
+[node name="Boundary" type="Node2D" parent="StaticObjects"]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="LongGroundPlatform" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(640, -24)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="LongGroundPlatform2" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(24, -16000)
+rotation = 1.5708
+scale = Vector2(10, 1)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="LongGroundPlatform3" parent="StaticObjects/Boundary" instance=ExtResource("3_vyipp")]
+position = Vector2(1264, -16000)
+rotation = 1.5708
+scale = Vector2(10, 1)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Floor1" type="Node2D" parent="StaticObjects"]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Floor1Platforms" parent="StaticObjects/Floor1" instance=ExtResource("4_5oowe")]
+position = Vector2(632, -208)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(949, -321)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform2" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(855, -394)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform3" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(684, -322)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform4" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(511, -322)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform5" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(336, -322)
+scale = Vector2(1.1, 1)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Basic3TLongPlatform6" parent="StaticObjects/Floor1" instance=ExtResource("5_nfv37")]
+position = Vector2(170, -375)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Floor2" type="Node2D" parent="StaticObjects"]
+
+[node name="Floor2Platforms" parent="StaticObjects/Floor2" instance=ExtResource("6_be2mt")]
+position = Vector2(644, -623)
+physics_material_override = SubResource("PhysicsMaterial_kxcm5")
+
+[node name="Floor3" type="Node2D" parent="StaticObjects"]
+
+[node name="Floor3Platforms" parent="StaticObjects/Floor3" instance=ExtResource("7_xksnc")]
+position = Vector2(653, -1132)
+
+[node name="BackgroundObjects" type="Node2D" parent="."]
+
+[node name="Floor1" type="Node2D" parent="BackgroundObjects"]
+
+[node name="MainBackgroundTileMapLayer" parent="BackgroundObjects/Floor1" instance=ExtResource("6_108wl")]
+
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundObjects/Floor1"]
+z_index = 1
+position = Vector2(650.5, -249.5)
+scale = Vector2(38.0313, 13.3438)
+texture = ExtResource("9_veuap")
+
+[node name="Floor2" type="Node2D" parent="BackgroundObjects"]
+
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundObjects/Floor2"]
+position = Vector2(653, -645)
+scale = Vector2(1.2625, 0.758333)
+texture = ExtResource("9_amu7l")
+
+[node name="Floor3" type="Node2D" parent="BackgroundObjects"]
+z_index = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundObjects/Floor3"]
+position = Vector2(659.75, -1417)
+scale = Vector2(3.23047, 5.46296)
+texture = ExtResource("9_6ohrm")
+region_rect = Rect2(0, -202.063, 657.833, 418.063)
+
+[node name="SnowParticles" parent="BackgroundObjects/Floor3" instance=ExtResource("12_f5m7d")]
+top_level = true
+z_index = 8
+position = Vector2(631, -1573)
+lifetime = 40.0
+visibility_rect = Rect2(-1000, -200, 2000, 750)
+
+[node name="Triggers" type="Node2D" parent="."]
+
+[node name="EndingTriggerArea2D" type="Area2D" parent="Triggers"]
+collision_layer = 16
+script = ExtResource("12_t6jab")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/EndingTriggerArea2D"]
+position = Vector2(202, -1476.5)
+shape = SubResource("RectangleShape2D_kq0k3")
+
+[node name="UserInterface" parent="." instance=ExtResource("3_3tk3r")]
+
+[connection signal="body_entered" from="Triggers/EndingTriggerArea2D" to="Triggers/EndingTriggerArea2D" method="_on_body_entered"]

@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="cissa-game-jam"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+run/main_scene="uid://cvqyn5jc3c2ad"
+config/features=PackedStringArray("4.4", "GL Compatibility")
 
 [autoload]
 
@@ -45,7 +46,21 @@ debug_5={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="PlayerTile in placed state"
+2d_physics/layer_2="Static ground object like platforms"
+2d_physics/layer_3="PlayerTile in floating/dragging state"
+2d_physics/layer_4="Hint square"
+
+[physics]
+
+common/physics_ticks_per_second=120
+common/physics_jitter_fix=0.6
+2d/default_gravity=750.0
+
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

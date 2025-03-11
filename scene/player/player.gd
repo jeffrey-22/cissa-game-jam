@@ -398,34 +398,34 @@ func get_usable_player_tile_count() -> int:
 				count += 1
 	return count
 	
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("debug_1"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				child_node.global_transform.origin.y -= 32
-	if Input.is_action_just_pressed("debug_2"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
-					child_node.global_transform.origin.y -= 256
-	if Input.is_action_just_pressed("debug_3"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				if child_node.current_drag_state == PlayerTile.DragState.UNCOLLECTED:
-					child_node.change_drag_state(PlayerTile.DragState.AFLOAT)
-	if Input.is_action_just_pressed("debug_4"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
-					child_node.global_transform.origin.x -= 64
-	if Input.is_action_just_pressed("debug_5"):
-		var all_children_node = get_children(false)
-		for child_node in all_children_node:
-			if child_node is PlayerTile:
-				if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
-					child_node.global_transform.origin.x += 64
+#func _process(_delta: float) -> void:
+	#if Input.is_action_just_pressed("debug_1"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#child_node.global_transform.origin.y -= 32
+	#if Input.is_action_just_pressed("debug_2"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.y -= 256
+	#if Input.is_action_just_pressed("debug_3"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state == PlayerTile.DragState.UNCOLLECTED:
+					#child_node.change_drag_state(PlayerTile.DragState.AFLOAT)
+	#if Input.is_action_just_pressed("debug_4"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.x -= 64
+	#if Input.is_action_just_pressed("debug_5"):
+		#var all_children_node = get_children(false)
+		#for child_node in all_children_node:
+			#if child_node is PlayerTile:
+				#if child_node.current_drag_state != PlayerTile.DragState.UNCOLLECTED:
+					#child_node.global_transform.origin.x += 64
 		

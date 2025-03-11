@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cevvtlfiw6ygv" path="res://asset/pack/PixelFantasy_Caves_1.0/background2.png" id="9_amu7l"]
 [ext_resource type="Texture2D" uid="uid://b12es5did3ykm" path="res://asset/pack/[FREE] Industrial Tileset/5. Industrial Tileset - Starter Pack 32p/3_Far_Background_Tile.png" id="9_veuap"]
 [ext_resource type="PackedScene" uid="uid://2ypc7q8aj621" path="res://scene/particles/snow_particles.tscn" id="12_f5m7d"]
-[ext_resource type="Script" path="res://scene/level/ending_trigger_area_2d.gd" id="12_t6jab"]
+[ext_resource type="Script" uid="uid://crfmu0h4u6hey" path="res://scene/level/ending_trigger_area_2d.gd" id="12_t6jab"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_kxcm5"]
 friction = 0.85

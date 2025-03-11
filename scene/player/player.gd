@@ -17,6 +17,8 @@ const MINIMUM_AUTOLOCK_DISTANCE = 30
 enum AttachDirection { UP, DOWN, LEFT, RIGHT }
 
 func _ready():
+	#changing stretch mode
+	get_tree().root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
 	Globals.player_node = self
 	initiate_hint_squares_update(true, true)
 

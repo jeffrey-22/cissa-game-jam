@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="cissa-game-jam"
-run/main_scene="res://scene/level/main_level.tscn"
+run/main_scene="res://scene/level/starting_screen.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 
 [autoload]
